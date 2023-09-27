@@ -1,0 +1,210 @@
+import random
+
+job=[]
+
+inter_arrival_pdf = [0.09,0.17,0.27,0.2,0.15,0.12]
+inter_arrival_cdf = []
+inter_arrival = [0,1, 2, 3, 4, 5]
+arrivalT = []
+
+service_time_pdf =[0.1,0.2,0.3,0.25,0.1,0.05]
+service_time_cdf =[]
+service_time= [1,2,3,4,5,6]
+service_timeT = []
+
+time_begin = []
+wait_time = []
+time_end =[]
+system_time =[]
+idle_time = []
+queue = []
+
+
+ #-------------------------------------------------------------  
+
+#creating 100 rows
+for i in range(0,100,1):
+    job.append(i)
+print("job",job,"\n")
+
+ #-------------------------------------------------------------  
+
+#calculating interarrival and service cdfs
+total1 =0
+total2 =0
+for i in range(0,6,1):
+    total1 = total1 + inter_arrival_pdf[i] 
+    inter_arrival_cdf.append(total1)
+    total2 = total2+ service_time_pdf[i]
+    service_time_cdf.append(total2)
+    
+print("inter_arrival_cdf",inter_arrival_cdf,"\n")
+print("service_time_cdf",service_time_cdf,"\n")
+
+ #-------------------------------------------------------------  
+
+
+#comparing random numbers to cdf and add their values according to given tables
+for i in range(100):
+    rand_num = random.uniform(0, 1)
+    for j in range(len(inter_arrival_cdf)):
+        if rand_num <= inter_arrival_cdf[j]:
+            arrivalT.append(inter_arrival[j])
+            break
+    for j in range(len(service_time_cdf)):
+        if rand_num <= service_time_cdf[j]:
+            service_timeT.append(service_time[j])
+            break
+print("arrival time:",arrivalT,"\n")
+print("service time:",service_timeT,"\n")
+
+ #-------------------------------------------------------------   
+    
+# calculating time service begin and end
+
+begin1 = arrivalT[0]
+end= arrivalT[0] + service_timeT[0]
+time_begin.append(begin1)
+time_end.append(end)
+
+for j in range (0,len(service_timeT)-1,1):
+    
+    
+    if arrivalT[j+1] >= end:
+            begin = arrivalT[j+1]
+            
+           
+    if arrivalT[j+1] < end:
+            begin = end
+    end= begin + service_timeT[j+1]       
+    
+    time_begin.append(begin)
+    time_end.append(end)
+        
+    
+print("time begin:",time_begin,"\n")
+print("time end:",time_end,"\n")
+
+ #-------------------------------------------------------------
+   
+#calculate wait time
+
+for k in range (0,len(arrivalT),1):
+    wait = time_begin[k]-arrivalT[k]
+    #calculate system time 
+    systime = time_end[k]-arrivalT[k]
+    wait_time.append(wait)
+    system_time.append(systime)
+    
+print("wait time:",wait_time,"\n")   
+print("system time:",system_time,"\n")
+
+ #-------------------------------------------------------------
+ 
+ #calculating idle time
+ 
+if arrivalT[0] > 0 :
+    idle = arrivalT[0]
+    idle_time.append(idle)
+else:
+   idle=0
+   idle_time.append(idle)
+for l in range (0,len(arrivalT)-1,1):
+    
+    if arrivalT[l+1] > time_end[l]:
+        idle = arrivalT[l+1] - time_end[l]
+        
+    else :
+        idle =0
+    idle_time.append(idle)
+    
+print("idle time:",idle_time,"\n")
+
+ #-------------------------------------------------------------
+ 
+ # calculating queue
+queue1 =0
+queue.append(queue1)
+queue11 = 0
+queue.append(queue11)
+for h in range (1,len(job)-1,1):
+     
+     if arrivalT[h+1] >= time_begin[h]:
+         queue2 = 1
+         queue.append(queue2)
+         
+     queue3 = 0
+     if arrivalT[h+1] < time_begin[h]:
+             queue3 =+2
+             queue.append(queue3)
+for x in range (0,len(job)-2,1):
+     queue4 = 2
+     if arrivalT[x+2] < time_begin[x]:
+             queue4 =+1
+             queue.append(queue4)
+print("queue:",queue,"\n")
+
+ #-------------------------------------------------------------
+ 
+# Average time a customer spends in the queue (waiting time in queue).
+waitSum = sum(wait_time)
+waitAvg = waitSum / len(job)
+print("Average time a customer spends in the queue=",waitAvg,"\n")
+
+ #-------------------------------------------------------------
+ 
+# Probability of waiting.
+count = 0
+for d in range(0,len(wait_time),1):
+    if wait_time[d] > 0:
+        count+=1
+probWaiting = count / len(job)
+print("Probability of waiting=",probWaiting,"\n")
+
+ #-------------------------------------------------------------
+
+#Probability of the server being idle.
+idleSum = sum(idle_time)
+total_runtime = time_end[-1]
+pronIdle = idleSum / total_runtime
+print("Probability of the server being idle=",pronIdle,"\n")
+
+ #-------------------------------------------------------------
+ 
+#Average service time.
+serviceSum = sum(service_time)
+serviceAvg = serviceSum / len(job)
+print("Average service time=",serviceAvg,"\n")
+ 
+ #-------------------------------------------------------------
+
+#Average Interarrival time (time between arrivals). 
+iatSum = sum(inter_arrival)
+iatAvg = iatSum / len(inter_arrival)-1
+print("Average Interarrival time",iatAvg,"\n")
+ 
+ #-------------------------------------------------------------
+ 
+#Average time a customer spends in the system.
+value = sum(system_time) / len(job)
+print("Average time a customer spends in the system=",value,"\n")
+
+ #-------------------------------------------------------------
+ 
+#Average queue length.
+queueSum = sum(queue) / len(job)
+print("Average queue length=",queueSum,"\n")
+ #-------------------------------------------------------------
+ 
+#Server utilization.
+s1 = total_runtime - idleSum
+s2 = s1 / total_runtime
+print("Server utilization=",s2,"\n")
+
+ #-------------------------------------------------------------
+ 
+#Average waiting time for those who wait.
+w= waitSum / count 
+print("Average waiting time for those who wait=",w,"\n")
+
+ #-------------------------------------------------------------
