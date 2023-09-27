@@ -1,0 +1,21 @@
+Inputs:
+Implement interarrival and service time in two ways:
+• Using exact numbers given in the slides (for testing the correctness of your
+simulation). Do this for the exercise solved in the section.
+• Randomly generated numbers using a random number generator (based on the
+probability distributions described in the slides). Do this for 100 customers (rows).
+o Interarrival times: Uniform between 0 and 1.
+o Service times: Uniform between 0 and 1.
+
+Outputs:
+• The simulation table.
+• Show the following statistics:
+o Average time a customer spends in the queue (waiting time in queue).
+o Probability of waiting.
+o Probability of the server being idle.
+o Average service time.
+o Average Interarrival time (time between arrivals).
+o Average time a customer spends in the system.
+o Average queue length.
+o Server utilization.
+o Average waiting time for those who wait.
